@@ -1,0 +1,39 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: voting.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: orderer
+
+
+PeerOrgs:
+  - Name: Evoting
+    Domain: voting.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: evote.voting.com
+        CommonName: evote.voting.com
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: Privatevoting
+    Domain: privatevoting.com
+    Specs:
+      - Hostname: privatevote.voting.com
+        CommonName: privatevote.voting.com
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: Intervoting
+    Domain: intervoting.com
+    Specs:
+      - Hostname: intervote.voting.com
+        CommonName: intervote.voting.com
+    Template:
+      Count: 1
+    Users:
+      Count: 1

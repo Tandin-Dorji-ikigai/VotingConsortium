@@ -1,0 +1,116 @@
+version: '3.8'
+
+networks:
+  vote-nets:
+    name: vote-nets
+    external: true
+volumes:
+  data-privatevote.voting.com:
+  data-intervote.voting.com:
+  data-orderer.voting.com: 
+  data-evote.voting.com:
+
+services:
+  development:
+    container_name: Votindevweb
+    build:
+      context: .
+      dockerfile: Dockerfile.Dev
+    command: sleep infinity
+    stop_grace_period: 5s
+    volumes:
+      - ../..:/workspaces:cached
+    networks:
+      - vote-nets
+
+  # Orderer service
+  orderer.voting.com:
+    container_name: orderer.voting.com
+    image: hyperledger/fabric-orderer:$IMAGE_TAG
+    command: orderer
+    environment:
+      - FABRIC_CFG_PATH=/var/hyperledger/config
+      - FABRIC_LOGGING_SPEC=ERROR
+     
+    volumes:
+      - ${PWD}/config/orderer:/var/hyperledger/config
+      - ${PWD}/config/crypto-config/ordererOrganizations/voting.com/orderers/orderer.voting.com/msp:/var/hyperledger/msp
+      - ${PWD}/config/crypto-config/ordererOrganizations/voting.com/orderers/orderer.voting.com/tsl:/var/hyperledger/tls
+      - data-orderer.voting.com:/var/ledger
+    ports:
+      - 7050:7050
+      - 8443:8443
+    networks:
+      - vote-nets
+
+  # Peer service
+  evote.voting.com: 
+    container_name: evote.voting.com
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - FABRIC_CFG_PATH=/var/hyperledger/config
+      - FABRIC_LOGGING_SPEC=WARNING
+      - CORE_PEER_LOCALMSPID=EvotingMSP
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=vote-nets
+    command: peer node start
+    volumes:
+      - ${PWD}/config/evote:/var/hyperledger/config
+      - ${PWD}/config/crypto-config/peerOrganizations/voting.com/peers/evote.voting.com/msp:/var/hyperledger/msp
+      - ${PWD}/config/crypto-config/peerOrganizations/voting.com/peers/evote.voting.com/tls:/var/hyperledger/tls
+      - /var/run/:/var/run/
+      - data-evote.voting.com:/var/hyperledger/production
+    depends_on:
+      - orderer.voting.com  
+    ports:
+      - 7051:7051
+      - 7052:7052
+    networks:
+      - vote-nets
+
+  # Peer service
+  privatevote.voting.com: 
+    container_name: privatevote.voting.com 
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - FABRIC_CFG_PATH=/var/hyperledger/config
+      - FABRIC_LOGGING_SPEC=WARNING
+      - CORE_PEER_LOCALMSPID=PrivatevotingMSP
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=vote-nets
+    command: peer node start
+    volumes:
+      - ${PWD}/config/privatevote:/var/hyperledger/config
+      - ${PWD}/config/crypto-config/peerOrganizations/privatevoting.com/peers/privatevote.voting.com/msp:/var/hyperledger/msp
+      - ${PWD}/config/crypto-config/peerOrganizations/privatevoting.com/peers/privatevote.voting.com/tls:/var/hyperledger/tls
+      - /var/run/:/var/run/
+      - data-privatevote.voting.com:/var/hyperledger/production
+    depends_on:
+      - orderer.voting.com  
+    ports:
+      - 8051:7051 
+      - 8052:7052
+    networks:
+      - vote-nets
+
+  # Peer service
+  intervote.voting.com: 
+    container_name: intervote.voting.com
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      - FABRIC_CFG_PATH=/var/hyperledger/config
+      - FABRIC_LOGGING_SPEC=WARNING
+      - CORE_PEER_LOCALMSPID=IntervotingMSP
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=vote-nets
+    command: peer node start
+    volumes:
+      - ${PWD}/config/intervote:/var/hyperledger/config
+      - ${PWD}/config/crypto-config/peerOrganizations/intervoting.com/peers/intervote.voting.com/msp:/var/hyperledger/msp
+      - ${PWD}/config/crypto-config/peerOrganizations/intervote.com/peers/intervote.voting.com/tls:/var/hyperledger/tls
+      - /var/run/:/var/run/
+      - data-intervote.voting.com:/var/hyperledger/production
+    depends_on:
+      - orderer.voting.com  
+    ports:
+      - 9051:7051
+      - 9052:7052
+    networks:
+      - vote-nets

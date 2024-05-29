@@ -1,0 +1,20 @@
+# Using docker image from microsoft Ubuntu:jammy
+FROM mcr.microsoft.com/devcontainers/base:jammy
+# Update the OS
+RUN apt-get update
+# Install the ping command
+RUN apt-get -y install --no-install-recommends iputils-ping
+# Run the update for apt
+RUN apt update
+# Install Go
+# RUN apt install -y golang-go
+# Install Java
+# RUN apt install -y default-jdk
+# Install Python
+# RUN apt install -y python3
+# Install Node
+# RUN apt install -y nodejs
+# Install npm
+RUN apt install -y npm
+# Download the script for HLF and change to executable
+# RUN curl -sSLO https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/install-fabric.sh && chmod +x install-fabric.sh

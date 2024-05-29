@@ -1,0 +1,12 @@
+{
+    "name": "votingConsortium",
+    "dockerComposeFile": [
+        "docker-compose-votecsrt.yml"
+    ],
+    "service": "development",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "features": {
+        // This enables you to docker cli command in the development container
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    },
+}

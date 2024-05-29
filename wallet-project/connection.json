@@ -1,0 +1,48 @@
+{
+    "name": "votingConsortium",
+    "version": "1.0.0",
+    "channels": {
+      "votingchannel": {
+        "orderers": ["orderer.voting.com"],
+        "peers": {
+          "evote.voting.com": {},
+          "intervote.voting.com": {},
+          "privatevote.voting.com": {}
+        }
+      }
+    },
+    "organizations": {
+      "Evoting": {
+        "mspid": "EvotingMSP",
+        "peers": ["evote.voting.com"]
+      },
+      "Privatevoting": {
+        "mspid": "PrivatevotingMSP",
+        "peers": ["privatevote.voting.com"]
+      },
+      "Intervoting": {
+        "mspid": "IntervotingMSP",
+        "peers": ["intervote.voting.com"]
+      }
+    },
+    "orderers": {
+      "orderer.voting.com": {
+        "url": "grpc://orderer.voting.com:7050",
+        "grpcOptions": {
+          "ssl-target-name-override": "orderer.voting.com"
+        }
+      }
+    },
+    "peers": {
+      "evote.voting.com": {
+        "url": "grpc://evote.voting.com:7051"
+      },
+      "privatevote.voting.com": {
+        "url": "grpc://privatevote.voting.com:7051"
+      },
+      "intervote.voting.com": {
+        "url": "grpc://intervote.voting.com:7051"
+      }
+    }
+  }
+  
